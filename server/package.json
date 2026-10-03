@@ -1,0 +1,38 @@
+{
+  "name": "dystopia-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "postinstall": "prisma generate",
+    "migrate:turso": "node scripts/deploy-migrations-turso.js",
+    "seed:invites": "node scripts/seed-invite-codes.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@prisma/adapter-libsql": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "nanoid": "^6.0.1",
+    "socket.io": "^4.8.4"
+  },
+  "devDependencies": {
+    "dotenv": "^18.0.5",
+    "prisma": "^7.10.0"
+  },
+  "allowScripts": {
+    "@prisma/engines@7.10.0": true,
+    "prisma@7.10.0": true,
+    "better-sqlite3@12.11.1": true
+  }
+}

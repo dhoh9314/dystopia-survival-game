@@ -1,0 +1,78 @@
+// Prisma schema for the dystopia survival game
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model InviteCode {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  account   Account?
+}
+
+model Account {
+  id           String      @id @default(cuid())
+  displayName  String
+  inviteCodeId String      @unique
+  inviteCode   InviteCode  @relation(fields: [inviteCodeId], references: [id])
+  createdAt    DateTime    @default(now())
+  lastLoginAt  DateTime    @default(now())
+  characters   Character[]
+}
+
+model Character {
+  id          String   @id @default(cuid())
+  accountId   String
+  account     Account  @relation(fields: [accountId], references: [id])
+  name        String
+  superpower  String
+  level       Int      @default(1)
+  xp          Int      @default(0)
+  statPoints  Int      @default(0)
+
+  maxHp       Int      @default(100)
+  hp          Int      @default(100)
+  strength    Int      @default(5)
+  agility     Int      @default(5)
+  perception  Int      @default(5)
+  vitality    Int      @default(5)
+
+  hunger      Float    @default(100)
+  thirst      Float    @default(100)
+  fatigue     Float    @default(0)
+
+  locationId  String   @default("rq_checkpoint")
+
+  inventory      String  @default("[]")
+  equippedWeapon String?
+  equippedArmor  String?
+
+  discoveredLore      String @default("[]")
+  discoveredMobs      String @default("[]")
+  interactedPlayers   String @default("[]")
+
+  isDead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  shelter     Shelter?
+
+  @@index([accountId])
+}
+
+model Shelter {
+  id         String   @id @default(cuid())
+  ownerId    String   @unique
+  owner      Character @relation(fields: [ownerId], references: [id])
+  locationId String
+  name       String
+  registered String   @default("[]")
+  createdAt  DateTime @default(now())
+}
