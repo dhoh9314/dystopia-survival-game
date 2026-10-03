@@ -3,7 +3,7 @@ services:
     name: dystopia-survival-game
     runtime: node
     plan: free
-    buildCommand: "cd client && npm install && npm run build && cd ../server && npm install"
+    buildCommand: "cd client && npm install --include=dev && npm run build && cd ../server && npm install --include=dev"
     startCommand: "cd server && npm run migrate:turso && npm start"
     envVars:
       - key: NODE_ENV
