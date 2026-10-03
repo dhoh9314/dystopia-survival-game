@@ -1,5 +1,14 @@
 import { PrismaClient } from '../generated/prisma/index.js'
 
+// Neither a libsql:// URL nor a JWT should ever legitimately contain
+// whitespace. Stripping all of it (not just leading/trailing) guards
+// against copy-pasting a value that picked up an embedded line break —
+// e.g. from a chat UI or terminal that visually wrapped a long token —
+// which a plain .trim() wouldn't catch since the break isn't at the edges.
+function stripWhitespace(value) {
+  return value?.replace(/\s+/g, '')
+}
+
 // Local dev uses a plain SQLite file (better-sqlite3). In production, point
 // TURSO_DATABASE_URL (+ TURSO_AUTH_TOKEN) at a Turso/LibSQL database instead
 // so data survives redeploys — Render's own disk is ephemeral. Both are
@@ -8,11 +17,8 @@ async function createAdapter() {
   if (process.env.TURSO_DATABASE_URL) {
     const { PrismaLibSql } = await import('@prisma/adapter-libsql')
     return new PrismaLibSql({
-      // .trim() guards against a stray trailing newline from copy-pasting
-      // these into a dashboard env var field — a near-invisible but fatal
-      // mistake, since a JWT with an embedded \n fails header construction.
-      url: process.env.TURSO_DATABASE_URL.trim(),
-      authToken: process.env.TURSO_AUTH_TOKEN?.trim(),
+      url: stripWhitespace(process.env.TURSO_DATABASE_URL),
+      authToken: stripWhitespace(process.env.TURSO_AUTH_TOKEN),
     })
   }
 

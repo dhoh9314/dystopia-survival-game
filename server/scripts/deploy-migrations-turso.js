@@ -20,8 +20,10 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const migrationsDir = path.join(__dirname, '../prisma/migrations')
 
-const url = process.env.TURSO_DATABASE_URL?.trim()
-const authToken = process.env.TURSO_AUTH_TOKEN?.trim()
+// Strip ALL whitespace (not just leading/trailing) — a copy-paste from a
+// chat UI or terminal can embed a line break mid-token that .trim() misses.
+const url = process.env.TURSO_DATABASE_URL?.replace(/\s+/g, '')
+const authToken = process.env.TURSO_AUTH_TOKEN?.replace(/\s+/g, '')
 
 if (!url) {
   console.log('[migrate-turso] TURSO_DATABASE_URL not set, skipping (using local SQLite).')
