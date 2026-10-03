@@ -20,8 +20,8 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const migrationsDir = path.join(__dirname, '../prisma/migrations')
 
-const url = process.env.TURSO_DATABASE_URL
-const authToken = process.env.TURSO_AUTH_TOKEN
+const url = process.env.TURSO_DATABASE_URL?.trim()
+const authToken = process.env.TURSO_AUTH_TOKEN?.trim()
 
 if (!url) {
   console.log('[migrate-turso] TURSO_DATABASE_URL not set, skipping (using local SQLite).')
